@@ -124,15 +124,15 @@ export async function POST(req: NextRequest) {
                     properties: {
                       question: {
                         type: "string",
-                        description: `a question with the topic ${topic}`,
+                        description: `a question with the topic ${topic}. example structure: "What is the key spices used in curry?"`,
                       },
                       answer: {
                         type: "string",
-                        description: `the answer to the question`,
+                        description: `a full sentence answer to the question. example structure: "Tumeric and Paprika are the key spice used in curry"`,
                       },
                       blankedAnswer: {
                         type: "string",
-                        description: `the answer with the most important information to answer the question blanked out. Replace the word with a "<blank>". Blank out the answers in line with the goal to learn ${topic}. Only blank out a maximum of 2 words.`,
+                        description: `the full sentence answer with the most important information to the answer the question blanked out. Replace the words with "<blank>"s. Blank out the answers in line with the goal to learn ${topic}. Only blank out a maximum of 3 words. example structure: "<blank> and <blank> are the key spice used in curry"`,
                       },
                     },
                   },

@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * Timer Element Props
@@ -12,8 +12,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 export interface TimerProps {
   disabled?: boolean;
   isEnded: boolean;
-  time: number;
-  setTime: Dispatch<SetStateAction<number>>;
+  stopTimer: (time: number) => void;
 }
 
 /**
@@ -31,15 +30,12 @@ export interface TimerProps {
  *
  * @bugs
  */
-export default function Timer({
-  disabled,
-  isEnded,
-  time,
-  setTime,
-}: TimerProps) {
+export default function Timer({ disabled, isEnded, stopTimer }: TimerProps) {
+  const [time, setTime] = useState(0);
+
   useEffect(() => {
     if (!disabled) {
-      if (isEnded) return;
+      if (isEnded) stopTimer(time);
 
       const interval = setInterval(() => {
         setTime((prevTime) => prevTime + 1);
@@ -47,7 +43,7 @@ export default function Timer({
 
       return () => clearInterval(interval);
     }
-  });
+  }, [isEnded, disabled, stopTimer, time]);
 
   return (
     <span>

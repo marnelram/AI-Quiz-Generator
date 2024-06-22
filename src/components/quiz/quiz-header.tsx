@@ -1,13 +1,11 @@
 import { TimerIcon } from "lucide-react";
 import Timer from "../timer";
 import CounterCard from "./counter";
-import { Dispatch, SetStateAction } from "react";
 
 export interface quizHeaderProps {
   topic: string;
   isEnded: boolean;
-  time: number;
-  setTime: Dispatch<SetStateAction<number>>;
+  stopTimer: (time: number) => void;
   numberCorrect: number;
   numberWrong: number;
 }
@@ -15,8 +13,7 @@ export interface quizHeaderProps {
 export default function QuizHeader({
   topic,
   isEnded,
-  time,
-  setTime,
+  stopTimer,
   numberCorrect,
   numberWrong,
 }: quizHeaderProps) {
@@ -31,7 +28,7 @@ export default function QuizHeader({
       <div className="flex w-full justify-between items-center">
         <div className="flex justify-self-center text-slate-400">
           <TimerIcon className="mr-2" />
-          <Timer isEnded={isEnded} time={time} setTime={setTime} />
+          <Timer isEnded={isEnded} stopTimer={stopTimer} />
         </div>
         <CounterCard numberCorrect={numberCorrect} numberWrong={numberWrong} />
       </div>

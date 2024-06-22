@@ -1,7 +1,7 @@
 "use client";
 import { Question, Quiz } from "@prisma/client";
 import { ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "../../ui/button";
 import {
   Form,
@@ -43,41 +43,50 @@ export default function FillInTheBlankQuiz({ quiz }: fillInTheBlankQuizProps) {
 
   // get the current question
   const [questionNumber, setQuestionNumber] = useState(0);
-  const currentQuestion = quiz.questions[questionNumber];
+  const currentQuestion = useMemo(
+    () => quiz.questions[questionNumber],
+    [quiz.questions, questionNumber]
+  );
 
   // set the blank answer array
-  const [answerParts, setAnswerParts] = useState(
-    currentQuestion.blankedAnswer
-      ? currentQuestion.blankedAnswer?.split("<blank>")
-      : [currentQuestion.answer]
+  const answerParts = useMemo(
+    () =>
+      currentQuestion.blankedAnswer
+        ? currentQuestion.blankedAnswer?.split("<blank>")
+        : [currentQuestion.answer],
+    [currentQuestion]
   );
   console.log("answerParts: ", answerParts);
 
-  // set the response schema
-  const [formSchema, setFormSchema] = useState(
-    generateResponseSchema(answerParts.length - 1)
+  const formSchema = useMemo(
+    () => generateResponseSchema(answerParts.length - 1),
+    [answerParts]
   );
-  console.log("form schema shape: ", formSchema.shape);
 
   //initialize the questionForm
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
 
-  console.log("form schema: ", formSchema);
+  console.log("form schema: ", formSchema.shape);
 
   // set the correct counter
   const [numberCorrect, setNumberCorrect] = useState(0);
   const [numberWrong, setNumberWrong] = useState(0);
 
-  // set the timer states
-  const [isEnded, setIsEnded] = useState(false);
+  // set the stop timer function
   const [time, setTime] = useState(0);
+  const stopTimer = (time: number) => {
+    console.log(`quiz took: ${time} seconds`);
+    setTime(time);
+  };
+  const [isEnded, setIsEnded] = useState(false);
 
   // create the toast
   const { toast } = useToast();
 
   function onSubmit(form: any) {
+    setIsEnded(true);
     form.console.log("form: ", form);
     form.parts;
   }
@@ -102,8 +111,7 @@ export default function FillInTheBlankQuiz({ quiz }: fillInTheBlankQuizProps) {
       <QuizHeader
         topic={topic}
         isEnded={isEnded}
-        time={time}
-        setTime={setTime}
+        stopTimer={stopTimer}
         numberCorrect={numberCorrect}
         numberWrong={numberWrong}
       />

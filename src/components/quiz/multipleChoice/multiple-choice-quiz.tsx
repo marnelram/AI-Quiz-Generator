@@ -41,9 +41,13 @@ export default function MultipleChoiceQuiz({ quiz }: multipleChoiceQuizProps) {
   const [numberCorrect, setNumberCorrect] = useState(0);
   const [numberWrong, setNumberWrong] = useState(0);
 
-  // set the timer states
-  const [isEnded, setIsEnded] = useState(false);
+  // set the stop timer function
   const [time, setTime] = useState(0);
+  const stopTimer = (time: number) => {
+    console.log(`quiz took: ${time} seconds`);
+    setTime(time);
+  };
+  const [isEnded, setIsEnded] = useState(false);
 
   //initialize the questionForm
   const form = useForm<z.infer<typeof formSchema>>({
@@ -70,8 +74,11 @@ export default function MultipleChoiceQuiz({ quiz }: multipleChoiceQuizProps) {
         description: "LOOSER",
       });
     }
-    if (questionNumber < questions.length)
+    if (questionNumber < questions.length) {
       setQuestionNumber((number) => number + 1);
+      setIsEnded(true);
+    }
+
     console.log(form.response);
   }
 
@@ -95,8 +102,7 @@ export default function MultipleChoiceQuiz({ quiz }: multipleChoiceQuizProps) {
       <QuizHeader
         topic={topic}
         isEnded={isEnded}
-        time={time}
-        setTime={setTime}
+        stopTimer={stopTimer}
         numberCorrect={numberCorrect}
         numberWrong={numberWrong}
       />
